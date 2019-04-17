@@ -1,0 +1,9 @@
+FROM digitalasset/daml-sdk:0.12.1-master
+
+WORKDIR /home/sdk
+
+COPY target/structured-products.dar /home/sdk/
+
+EXPOSE 7600
+
+CMD da run sandbox -- --port 7600 --scenario DA.RefApps.StructuredProducts.MarketSetup:marketSetup  structured-products.dar

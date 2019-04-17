@@ -1,0 +1,324 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+module DA.RefApps.StructuredProducts.DCN where
+
+import DA.Date
+import DA.List
+import DA.Optional
+
+data PriceAndCCY = PriceAndCCY
+  with
+    price: Decimal
+    currency: Text
+  deriving (Eq, Show)
+
+data CouponDate = CouponDate
+  with
+    couponObservationDate: Time
+    variableInterestPaymentDate: Time
+  deriving (Eq, Show)
+
+data StrikeDatesAndPrices = StrikeDatesAndPrices
+  with
+    couponSchedule: [CouponDate]
+    index1CouponStrike: PriceAndCCY
+    index2CouponStrike: PriceAndCCY
+  deriving (Eq, Show)
+
+data KnockOutDate = KnockOutDate
+  with
+    koDeterminationDate: Time
+    koRedemptionDate: Time
+  deriving (Eq, Show)
+
+data KODatesAndPrices = KODatesAndPrices
+  with
+    knockOutSchedule: [KnockOutDate]
+    index1KOPriceCCY: PriceAndCCY
+    index2KOPriceCCY: PriceAndCCY
+  deriving (Eq, Show)
+
+data ClosingPrice = ClosingPrice
+  with
+    underlying: Text
+    priceCCY: PriceAndCCY
+  deriving (Eq, Show)
+
+-- Helper function to extract the actual knock out date
+getKODeterminationDate: KnockOutDate -> Time
+getKODeterminationDate k = k.koDeterminationDate
+
+-- Helper function to extract the actual coupon date
+getCouponObservationDate: CouponDate -> Time
+getCouponObservationDate c = c.couponObservationDate
+
+data VariableInterestRate = VariableInterestRate
+  with
+    minRate: Decimal
+    maxRate: Decimal
+  deriving (Eq, Show)
+
+data DayCountFraction = DayCountFraction
+  with
+    numerator: Int
+    denominator: Int
+  deriving (Eq, Show)
+
+data DCNTerms = DCNTerms
+  with
+    productId: Text
+    notional: Decimal
+    currency: Text
+    issuePricePerc: Decimal
+    strikeDatesAndPrices: StrikeDatesAndPrices
+    knockoutDatesAndPrices: KODatesAndPrices
+    index1Id: Text
+    index2Id: Text
+    variableInterestRate: VariableInterestRate
+    dayCountFraction: DayCountFraction
+    tradeDate: Time
+    maturityDate: Time
+    regulator: Party
+  deriving (Eq, Show)
+
+data AccountDetails = AccountDetails
+  with
+    accountOwner: Party
+    bic: Text
+    iban: Text
+  deriving (Eq, Show)
+
+-- Helper function to determine the knock out redemption date
+-- for the given date
+getCorrespondingKORedemptionDate: Time -> [KnockOutDate] -> Time
+getCorrespondingKORedemptionDate koDeterminationSearchDate knockOutSchedule =
+  let
+    i = elemIndex koDeterminationSearchDate (map getKODeterminationDate knockOutSchedule)
+    n = knockOutSchedule!!fromSome i
+  in n.koRedemptionDate
+
+-- Helper function to determine the interest payment date
+-- for the given date
+getCorrespondingInterestPaymentDate: Time -> [CouponDate] -> Time
+getCorrespondingInterestPaymentDate couponObservationSearchDate couponSchedule =
+  let
+    i = elemIndex couponObservationSearchDate (map getCouponObservationDate couponSchedule)
+    n = couponSchedule!!fromSome i
+  in n.variableInterestPaymentDate
+
+-- Role contract for issuer of the asset
+template IssuerRole
+  with
+    issuer: Party
+    regulator: Party
+  where
+    signatory issuer
+    observer regulator
+    controller issuer can
+      nonconsuming OnboardIntermediary: ContractId IntermediaryRoleInvitation
+        with intermediary: Party
+        do create IntermediaryRoleInvitation with issuer; intermediary; regulator
+
+-- Temporary contract to invite a party to intermediary role
+template IntermediaryRoleInvitation
+  with
+    issuer: Party
+    intermediary: Party
+    regulator: Party
+  where
+    signatory issuer
+    observer regulator
+    controller intermediary can
+      AcceptInvitationFromIssuer: ContractId IntermediaryRole
+        do create IntermediaryRole with intermediary; issuer; regulator
+
+-- Role contract for intermediary standing between the issuer
+-- and the buyer in the transactions
+template IntermediaryRole
+  with
+    intermediary: Party
+    issuer: Party
+    regulator: Party
+  where
+    signatory intermediary, issuer
+    observer regulator
+    controller intermediary can
+      nonconsuming OnboardClient: ContractId ClientRoleInvitation
+        with client: Party
+        do create ClientRoleInvitation with intermediary; client; regulator
+
+template ClientRoleInvitation
+  with
+    intermediary: Party
+    client: Party
+    regulator: Party
+  where
+    signatory intermediary
+    observer regulator
+    controller client can
+      AcceptInvitation: ContractId ClientRole
+        do create ClientRole with client; intermediary; regulator
+
+-- Temporary contract to invite a party to client role
+template ClientRole
+  with
+    client: Party
+    intermediary: Party
+    regulator: Party
+  where
+    signatory client, intermediary
+    observer regulator
+
+-- Market data holder contract
+template MarketData
+  with
+    index1Price: ClosingPrice
+    index2Price: ClosingPrice
+    source: Text
+    publishDate: Time
+    issuer: Party
+    subscribers: [Party]
+    regulator: Party
+  where
+    signatory issuer
+    observer subscribers, regulator
+
+-- Contract a proposed trade. It can be accepted or rejected by the potential buyer.
+-- If accepted it creates a Trade contract
+template TradeProposal
+  with
+    terms: DCNTerms
+    salesPrice: Decimal
+    issuerInfo: AccountDetails
+    buyer: Party
+  where
+    signatory issuerInfo.accountOwner
+    observer terms.regulator
+    controller buyer can
+      Accept : ContractId Trade
+        with tradeId: Text; bic: Text; iban: Text
+        do create Trade with tradeId; terms; issuerInfo; buyerInfo = AccountDetails with { accountOwner = buyer; bic; iban }; salesPrice
+      Reject : ()
+        do return ()
+
+-- Represents trade information. With this a new trade proposal can be created
+-- or lifecycle events (e.g. coupon payment) can be invoked with the market data
+-- for the current date
+template Trade
+  with
+    tradeId: Text
+    terms: DCNTerms
+    salesPrice: Decimal
+    issuerInfo: AccountDetails
+    buyerInfo: AccountDetails
+  where
+    signatory issuerInfo.accountOwner, buyerInfo.accountOwner
+    observer terms.regulator
+    controller buyerInfo.accountOwner can
+      nonconsuming ProposeTradeToClient: ContractId TradeProposal
+        with client: Party; notional: Decimal
+        do
+          assert (notional <= terms.notional)
+          create TradeProposal with terms = terms with { notional }; salesPrice = notional; issuerInfo = buyerInfo; buyer = client -- = salesPriceForClient
+    controller issuerInfo.accountOwner can
+      nonconsuming Lifecycle: ()
+        with marketDataCid: ContractId MarketData
+        do
+          marketData <- fetch marketDataCid
+          nowDate <- getTime
+
+          assert (marketData.publishDate == nowDate)
+
+          -- IF KNOCKED OUT
+          if(elem nowDate (map getKODeterminationDate terms.knockoutDatesAndPrices.knockOutSchedule)) &&
+            (marketData.index1Price.priceCCY.price >= terms.knockoutDatesAndPrices.index1KOPriceCCY.price && marketData.index2Price.priceCCY.price >= terms.knockoutDatesAndPrices.index2KOPriceCCY.price) then
+              do
+              archive self  --Archive / Lock this
+              create KnockOutEvent with tradeId; productId = terms.productId;
+                                          redemptionDate = getCorrespondingKORedemptionDate nowDate terms.knockoutDatesAndPrices.knockOutSchedule;
+                                          closingPriceIndex1 = marketData.index1Price; index1KO = terms.knockoutDatesAndPrices.index1KOPriceCCY;
+                                          closingPriceIndex2 = marketData.index2Price; index2KO = terms.knockoutDatesAndPrices.index2KOPriceCCY;
+                                          knockOutReason = " Closing Prices (" <>
+                                                            marketData.index1Price.underlying <> ": " <> show marketData.index1Price.priceCCY.price <> " " <> marketData.index1Price.priceCCY.currency <> ", " <>
+                                                            marketData.index2Price.underlying <> ": " <> show marketData.index2Price.priceCCY.price <> " " <> marketData.index2Price.priceCCY.currency <>
+                                                             ") exceeded Knock-Out Prices (" <>
+                                                            marketData.index1Price.underlying <> ": " <> show terms.knockoutDatesAndPrices.index1KOPriceCCY.price <> " " <> terms.knockoutDatesAndPrices.index1KOPriceCCY.currency <> ", " <>
+                                                            marketData.index2Price.underlying <> ": " <> show terms.knockoutDatesAndPrices.index2KOPriceCCY.price <> " " <> terms.knockoutDatesAndPrices.index2KOPriceCCY.currency <>
+                                                            " on Knock-Out Determination Date " <> show (toDateUTC nowDate);
+                                          issuer = issuerInfo.accountOwner; owner = buyerInfo.accountOwner; regulator = terms.regulator
+              create PaymentInstructions with payerDetails = issuerInfo; payeeDetails = buyerInfo; transactionReference = tradeId; amount = terms.notional; currency = terms.currency;
+                                                paymentDate = getCorrespondingKORedemptionDate nowDate terms.knockoutDatesAndPrices.knockOutSchedule; regulator = terms.regulator
+              return ()
+          -- NOT KNOCKED OUT; PAY COUPON
+          else if(elem nowDate (map getCouponObservationDate terms.strikeDatesAndPrices.couponSchedule)) then
+            let variableInterestRate =
+                  if(marketData.index1Price.priceCCY.price >= terms.strikeDatesAndPrices.index1CouponStrike.price && marketData.index2Price.priceCCY.price >= terms.strikeDatesAndPrices.index2CouponStrike.price)
+                  then terms.variableInterestRate.maxRate
+                  else terms.variableInterestRate.minRate
+            in do
+            create CouponEvent with tradeId; productId = terms.productId; interestRate = variableInterestRate; dayCountFraction = terms.dayCountFraction;
+                                            interestPaymentDate = getCorrespondingInterestPaymentDate nowDate terms.strikeDatesAndPrices.couponSchedule;
+                                            index1CouponStrike = terms.strikeDatesAndPrices.index1CouponStrike; closingPriceIndex1 = marketData.index1Price;
+                                            index2CouponStrike = terms.strikeDatesAndPrices.index2CouponStrike; closingPriceIndex2 = marketData.index2Price;
+                                            issuer = issuerInfo.accountOwner; owner = buyerInfo.accountOwner; regulator = terms.regulator
+            create PaymentInstructions with payerDetails = issuerInfo; payeeDetails = buyerInfo; transactionReference = tradeId;
+                                              amount = terms.notional * variableInterestRate * 3.0 * intToDecimal terms.dayCountFraction.numerator / intToDecimal terms.dayCountFraction.denominator;
+                                              currency = terms.currency; paymentDate = getCorrespondingInterestPaymentDate nowDate terms.strikeDatesAndPrices.couponSchedule; regulator = terms.regulator
+            return ()
+          -- NOTHING TO BE DONE TODAY
+          else return ()
+
+-- Knock out event data holder contract
+template KnockOutEvent
+  with
+    tradeId: Text
+    productId: Text
+    redemptionDate: Time
+    index1KO: PriceAndCCY
+    closingPriceIndex1: ClosingPrice
+    index2KO: PriceAndCCY
+    closingPriceIndex2: ClosingPrice
+    knockOutReason: Text
+    issuer: Party
+    owner: Party
+    regulator: Party
+  where
+    signatory issuer
+    observer owner, regulator
+
+-- Coupon event data holder contract
+template CouponEvent
+  with
+    tradeId: Text
+    productId: Text
+    interestRate: Decimal
+    dayCountFraction: DayCountFraction
+    interestPaymentDate: Time
+    index1CouponStrike: PriceAndCCY
+    closingPriceIndex1: ClosingPrice
+    index2CouponStrike: PriceAndCCY
+    closingPriceIndex2: ClosingPrice
+    issuer: Party
+    owner: Party
+    regulator: Party
+  where
+    signatory issuer
+    observer owner, regulator
+
+-- Payment instructions data holder contract
+template PaymentInstructions
+  with
+    payerDetails: AccountDetails
+    payeeDetails: AccountDetails
+    transactionReference: Text
+    amount: Decimal
+    currency: Text
+    paymentDate: Time
+    regulator: Party
+  where
+    signatory payerDetails.accountOwner
+    observer payeeDetails.accountOwner, regulator
