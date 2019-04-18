@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/digital-asset/ex-structured-products.svg?style=svg)](https://circleci.com/gh/digital-asset/ex-structured-products)
 # Reference Application: Structured Products
 
 ## Introduction 
