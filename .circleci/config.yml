@@ -54,5 +54,5 @@ workflows:
   build_and_test:
     jobs:
       - daml_test
-      - mvn_test
+      - mvn_test:
           context: blackduck      
