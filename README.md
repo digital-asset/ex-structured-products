@@ -364,9 +364,6 @@ Follow these steps:
 
 14. If you have enabled the Telegram bot (search on Telegram for @DAMLBot), you will have received the event details in one message and the payment details (same MT202) in a separate message.
 
-
- ![Telegram Msg](images/telegram.png "Telegram Message")
-
 #### Coupon Event: Intermediary vs. Client
 
 Follow these steps:
