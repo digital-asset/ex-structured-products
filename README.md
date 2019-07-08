@@ -1,13 +1,13 @@
 [![CircleCI](https://circleci.com/gh/digital-asset/ex-structured-products.svg?style=svg)](https://circleci.com/gh/digital-asset/ex-structured-products)
 # Reference Application: Structured Products
 
-## Introduction 
+## Introduction
 
 Structured Equity Derivative Products are used to provide custom payoffs, often for Private Bank or wealth clients, who are looking to get exposure to particular underlying company performance in a way that traditional securities do not provide. For example, I may wish to receive a higher payoff if I bet the price of an underlying security trades within a particular range. Investment banks provide these products — called Structured Products — and sell them to Intermediaries, who in turn often slice up the product and offer it to their end clients.
 
 The term of such trades can be multiple years, with defined points in time where certain parameters are measured, compared against a predefined benchmark, and a calculation made as to whether a payment should be made.
 
-This application shows creation and subsequent event management and payment determination for two types of trades: 
+This application shows creation and subsequent event management and payment determination for two types of trades:
 
 *   Issuer vs. Intermediary
 *   Intermediary vs. Client
@@ -20,7 +20,7 @@ This application shows creation and subsequent event management and payment dete
 Be sure you have the following installed:
 *   DAML SDK
 *   Docker
-*   Java 
+*   Java
 *   Maven
 
 #### Installing Additional Tools: Telegram Installation
@@ -32,7 +32,7 @@ Telegram is used as an optional receive confirmation messages from the app. Skip
 3. Find your Telegram chat ID:
     1. Go to Chats menu in the application and find the existing bot called `@get_id_bot` by typing in its name to the search bar.
     2. Send the `/start` to the channel to get your Chat ID.
-    
+
        Your Chat ID will be displayed. You can use it as CHAT ID. Its typical format is `<numbers>`
 
 4. Create a new bot for the application:
@@ -112,11 +112,11 @@ cat <file_ name>
 3. Type:
 
 ```
-DAML_PROJECT="$(pwd)" da start
+DAML_PROJECT="$(pwd)" daml start
 ```
 The Navigator automatically opens in a new browser tab.
 
-4. Start the automation logic by starting bots. Type: 
+4. Start the automation logic by starting bots. Type:
 
 ```
 java -jar ./target/structured-products-1.0.0-SNAPSHOT.jar
@@ -145,22 +145,18 @@ cat <file_ name>
 #### Stopping Stand-Alone Run
 1. Close the browser tab.
 2. Stop the bots by pressing **Ctrl+C**.
-3. Stop the Sandbox and the Navigator.
-4. Type:
-```
-da stop
-```
+3. Stop the Sandbox and the Navigator by pressing **Ctrl+C**.
 
 ### Resetting the Prototype
 Reset the application by following these steps:
 1. Stop the App by following the steps in Stopping the App section.
 2. Start the App in Docker or Standalone by following the steps in the relevant section.
 
-## Walkthrough 
+## Walkthrough
 
 ### Logging In
 
-As you work through the steps described in this section, log in as different users in Navigator (Issuer, Intermediary, Client, Regulator). 
+As you work through the steps described in this section, log in as different users in Navigator (Issuer, Intermediary, Client, Regulator).
 
 To log in:
 
@@ -171,7 +167,7 @@ To switch users:
 1. Click the name of the current party at the top of the screen.
 2. On the home screen, select a different party.
 
-**Note:** The Navigator for this demo has been designed with tabs that show the different types of reporting that can be done when for such a workflow in DAML. The point here is that it is very simple to pull separate information off the ledger (Sandbox). 
+**Note:** The Navigator for this demo has been designed with tabs that show the different types of reporting that can be done when for such a workflow in DAML. The point here is that it is very simple to pull separate information off the ledger (Sandbox).
 
 *   Market data: shows the preset market data observations for the two underlyings
 *   Trade details: shows trade proposals and accepted trades
@@ -183,7 +179,7 @@ To switch users:
 All demo data is created when the application is run, using DAML scenarios. This data includes:
 
 *   Participant roles
-*   Product Term Sheet 
+*   Product Term Sheet
 *   Schedule of dates that are used during the demo
 *   Market data
 
@@ -201,7 +197,7 @@ Data is summarized here with additional information on each at the end of this d
   <tr>
    <td>Issuer
    </td>
-   <td>Issuer of a Digital Contract Note (DCN) 
+   <td>Issuer of a Digital Contract Note (DCN)
    </td>
   </tr>
   <tr>
@@ -226,7 +222,7 @@ Data is summarized here with additional information on each at the end of this d
 
 #### Term Sheet
 
-The details of the product are pre-loaded in the demo. An auto-callable Digital Contract Note (DCN)  combines a fixed income instrument (variable coupon payment) with optionality based on price of the underlyings. 
+The details of the product are pre-loaded in the demo. An auto-callable Digital Contract Note (DCN)  combines a fixed income instrument (variable coupon payment) with optionality based on price of the underlyings.
 
 #### Schedule
 
@@ -257,7 +253,7 @@ Follow these steps:
 
     You will see the pre-canned Trade Proposal between the Issuer and Intermediary and summary information: Product ID, Notional, Issuer, Buyer, Terms. Note that there is no Trade ID, as the trade has not yet been accepted by the Intermediary.
 
-3. Click on the contract and view all the details of the Term Sheet that has been pre-canned. 
+3. Click on the contract and view all the details of the Term Sheet that has been pre-canned.
    Note the Trade Proposal Contract number.
 
 4. Switch users and log in as **Intermediary**.
@@ -274,7 +270,7 @@ Follow these steps:
 9. Switch users and log in as **Intermediary**.
 10. Click on **Trade Details.**
 11. Click into the Proposal contract.
-2. Select the **Accept** choice.   
+2. Select the **Accept** choice.
     1. Enter INTER001 as tradeid.
     2. Enter INTXXXABC as bic.
     3. Enter 1234567 as iban.
@@ -288,9 +284,9 @@ Follow these steps:
 
 16. Click on **Include Archived** to show the now archived Proposal contract.
 
-#### New Trade: Intermediary vs. Client 
+#### New Trade: Intermediary vs. Client
 
-You now need to leverage the same business process for the trade between the Intermediary and the Client. 
+You now need to leverage the same business process for the trade between the Intermediary and the Client.
 
 Follow these steps:
 
@@ -334,7 +330,7 @@ Follow these steps:
 
     Note that as the Regulator, you can see both trades.
 
-#### Coupon Event: Issuer vs. Intermediary 
+#### Coupon Event: Issuer vs. Intermediary
 
 Follow these steps:
 
@@ -355,7 +351,7 @@ Follow these steps:
     Note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
 11. Switch users and log in as **Client**.
 12. Click on **Events** and then the **Payment Instructions** tab, noting that both are blank as no events or payments have yet been generated for the Intermediary vs. Client trade.
-13. In Finder, go to the /Users/<logged in user id>/desktop/swift_messages folder. 
+13. In Finder, go to the /Users/<logged in user id>/desktop/swift_messages folder.
 
     You will see that a sample SWIFT MT202 payment message that has been generated for the payment between the Issuer and the Intermediary. All SWIFT messages are written to this folder, which is a subfolder under the folder from which the bots were started.
 
