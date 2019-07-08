@@ -72,10 +72,10 @@ public class PisteBotTest {
             CouponEvent.TEMPLATE_ID,
             "cid-1",
             couponEvent.toValue(),
-                Optional.empty(),
-                Optional.empty(),
-                Collections.emptyList(),
-                Collections.emptyList());
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     assertEquals(
@@ -111,10 +111,10 @@ public class PisteBotTest {
             KnockOutEvent.TEMPLATE_ID,
             "cid-1",
             knockOutEvent.toValue(),
-                Optional.empty(),
-                Optional.empty(),
-                Collections.emptyList(),
-                Collections.emptyList());
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     assertEquals("DCN tradeId has knocked out, reason: Some reason for knock out", messages.get(0));
@@ -148,10 +148,10 @@ public class PisteBotTest {
             PaymentInstructions.TEMPLATE_ID,
             "cid-1",
             paymentInstructions.toValue(),
-                Optional.empty(),
-                Optional.empty(),
-                Collections.emptyList(),
-                Collections.emptyList());
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     // last piece of the message is a volatile id (Unique End to End Transaction Reference)
