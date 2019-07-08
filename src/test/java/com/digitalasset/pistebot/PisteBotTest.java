@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,11 @@ public class PisteBotTest {
             "event-1",
             CouponEvent.TEMPLATE_ID,
             "cid-1",
-            couponEvent.toValue());
+            couponEvent.toValue(),
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     assertEquals(
@@ -105,7 +110,11 @@ public class PisteBotTest {
             "event-1",
             KnockOutEvent.TEMPLATE_ID,
             "cid-1",
-            knockOutEvent.toValue());
+            knockOutEvent.toValue(),
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     assertEquals("DCN tradeId has knocked out, reason: Some reason for knock out", messages.get(0));
@@ -138,7 +147,11 @@ public class PisteBotTest {
             "event-1",
             PaymentInstructions.TEMPLATE_ID,
             "cid-1",
-            paymentInstructions.toValue());
+            paymentInstructions.toValue(),
+            Optional.empty(),
+            Optional.empty(),
+            Collections.emptyList(),
+            Collections.emptyList());
 
     bot.accept(event);
     // last piece of the message is a volatile id (Unique End to End Transaction Reference)
