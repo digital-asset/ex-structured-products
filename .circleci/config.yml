@@ -120,11 +120,11 @@ jobs:
             echo "testing if tag is on master"
             if git merge-base --is-ancestor $(git rev-parse $version) $(git rev-parse master)
             then
+              mkdir -p bin
+              cp -r /tmp/workspace/* bin/
               echo "archiving"
               package="structured-products-$version.tar.gz"
-              pushd /tmp/workspace
-              tar -czf "$package" *.jar *.dar lib NOTICE
-              popd
+              tar -czf "$package" *
 
               echo "releasing $version"
               hub release create \
