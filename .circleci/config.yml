@@ -107,31 +107,8 @@ jobs:
       - run:
           name: Push a new github release
           command: |
-            # Temporarily, we download Hub here.
-            pushd ${HOME}
-              wget https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz
-              tar xvzf hub-linux-amd64-2.12.1.tgz
-              export PATH="${HOME}/hub-linux-amd64-2.12.1/bin/:${PATH}"
-            popd
+            ./scripts/release.sh
 
-            export GITHUB_TOKEN="${GITHUB_REFAPP_MACHINE_TOKEN}"
-            version=$(git describe --abbrev=0 --tags)
-
-            echo "testing if tag is on master"
-            if git merge-base --is-ancestor $(git rev-parse $version) $(git rev-parse master)
-            then
-              mkdir -p bin
-              cp -r /tmp/workspace/* bin/
-              echo "archiving"
-              package="structured-products-$version.tar.gz"
-              tar -czf "$package" *
-
-              echo "releasing $version"
-              hub release create \
-                --attach "$package" \
-                --message "Release $version" \
-                "$version"
-            fi
 
 workflows:
   version: 2
