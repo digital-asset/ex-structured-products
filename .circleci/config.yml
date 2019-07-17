@@ -128,7 +128,7 @@ jobs:
 
               echo "releasing $version"
               hub release create \
-                --attach "/tmp/workspace/$package" \
+                --attach "$package" \
                 --message "Release $version" \
                 "$version"
             fi
