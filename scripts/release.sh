@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
- download hub
+set -e
+
+# download hub
 pushd ${HOME}
     wget https://github.com/github/hub/releases/download/v2.12.1/hub-linux-amd64-2.12.1.tgz
     tar xvzf hub-linux-amd64-2.12.1.tgz
