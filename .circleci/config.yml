@@ -87,7 +87,7 @@ jobs:
       - run:
           command: |
             export PATH=${HOME}/.daml/bin:${PATH}
-            daml build -o target/StructuredProducts.dar
+            daml build -o target/structured-products.dar
             daml test --junit target/daml-test-reports/daml-test.xml --files src/main/daml/DA/RefApps/StructuredProducts/Test.daml
       - save_cache:
           paths:
