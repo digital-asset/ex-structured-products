@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,6 +57,11 @@ public class StructuredProductsIT {
 
   @ClassRule public static ExternalResource compile = sandboxC.compilation();
   @Rule public Sandbox.Process sandbox = sandboxC.process();
+
+  @Before
+  public void setUp() {
+    telegramMessages.clear();
+  }
 
   @Test
   public void testWorkflow() {
