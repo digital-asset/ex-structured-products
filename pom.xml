@@ -114,9 +114,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.digitalasset.daml</groupId>
+            <groupId>com.digitalasset</groupId>
             <artifactId>functest-java_2.12</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.4</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -164,7 +165,19 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -246,6 +259,7 @@
                         <exclude>NOTICE</exclude>
                         <exclude>src/license/*</exclude>
                         <exclude>telegram.properties</exclude>
+                        <exclude>output_messages/*</exclude>
                     </excludes>
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>

@@ -34,3 +34,5 @@ logs/
 .navigator.conf
 
 NOTICES
+.daml
+output_messages/

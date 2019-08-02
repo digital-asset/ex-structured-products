@@ -20,15 +20,6 @@ public class Main {
     String sandboxHost = System.getenv().getOrDefault("SANDBOX_HOST", "localhost");
     int sandboxPort = Integer.parseInt(System.getenv().getOrDefault("SANDBOX_PORT", "7600"));
 
-    LedgerAPI ledgerAPI = runBots(sandboxHost, sandboxPort, outputPath);
-
-    System.out.println("Application started... Press Ctrl+C to stop it.");
-    Thread.currentThread().join();
-    ledgerAPI.stop();
-  }
-
-  public static LedgerAPI runBots(String sandboxHost, int sandboxPort, String outputPath) {
-    File outputDir = createOutputDir(outputPath);
     Consumer<String> telegramSender;
     try {
       TelegramBot telegramBot = TelegramBot.start();
@@ -39,6 +30,16 @@ public class Main {
           e);
       telegramSender = logger::info;
     }
+    LedgerAPI ledgerAPI = runBots(sandboxHost, sandboxPort, outputPath, telegramSender);
+
+    System.out.println("Application started... Press Ctrl+C to stop it.");
+    Thread.currentThread().join();
+    ledgerAPI.stop();
+  }
+
+  public static LedgerAPI runBots(
+      String sandboxHost, int sandboxPort, String outputPath, Consumer<String> telegramSender) {
+    File outputDir = createOutputDir(outputPath);
     PisteBot bot = new PisteBot(telegramSender, swift -> writeToFile(outputDir, swift));
     return startLedgerAPI(sandboxHost, sandboxPort, bot);
   }
