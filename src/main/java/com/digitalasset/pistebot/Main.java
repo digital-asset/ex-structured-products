@@ -20,8 +20,6 @@ public class Main {
     String sandboxHost = System.getenv().getOrDefault("SANDBOX_HOST", "localhost");
     int sandboxPort = Integer.parseInt(System.getenv().getOrDefault("SANDBOX_PORT", "7600"));
 
-    File outputDir = createOutputDir(outputPath);
-
     Consumer<String> telegramSender;
     try {
       TelegramBot telegramBot = TelegramBot.start();
@@ -32,19 +30,25 @@ public class Main {
           e);
       telegramSender = logger::info;
     }
-    PisteBot bot = new PisteBot(telegramSender, swift -> writeToFile(outputDir, swift));
-    LedgerAPI ledger = startLedger(sandboxHost, sandboxPort, bot);
+    LedgerAPI ledgerAPI = runBots(sandboxHost, sandboxPort, outputPath, telegramSender);
 
     System.out.println("Application started... Press Ctrl+C to stop it.");
     Thread.currentThread().join();
-    ledger.stop();
+    ledgerAPI.stop();
   }
 
-  private static LedgerAPI startLedger(String ledgerHost, int ledgerPort, PisteBot bot) {
-    LedgerAPI ledger = new LedgerAPI(ledgerHost, ledgerPort);
-    ledger.start();
-    ledger.listenEvents("Intermediary", bot);
-    return ledger;
+  public static LedgerAPI runBots(
+      String sandboxHost, int sandboxPort, String outputPath, Consumer<String> telegramSender) {
+    File outputDir = createOutputDir(outputPath);
+    PisteBot bot = new PisteBot(telegramSender, swift -> writeToFile(outputDir, swift));
+    return startLedgerAPI(sandboxHost, sandboxPort, bot);
+  }
+
+  private static LedgerAPI startLedgerAPI(String ledgerHost, int ledgerPort, PisteBot bot) {
+    LedgerAPI ledgerAPI = new LedgerAPI(ledgerHost, ledgerPort);
+    ledgerAPI.start();
+    ledgerAPI.listenEvents("Intermediary", bot);
+    return ledgerAPI;
   }
 
   private static void writeToFile(File outputDir, MT202 swiftMessage) {
