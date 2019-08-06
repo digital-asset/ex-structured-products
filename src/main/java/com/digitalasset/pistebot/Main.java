@@ -4,11 +4,13 @@
  */
 package com.digitalasset.pistebot;
 
+import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.digitalasset.ledger.LedgerAPI;
 import com.prowidesoftware.swift.model.mt.mt2xx.MT202;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -30,7 +32,12 @@ public class Main {
           e);
       telegramSender = logger::info;
     }
-    LedgerAPI ledgerAPI = runBots(sandboxHost, sandboxPort, outputPath, telegramSender);
+    LedgerAPI ledgerAPI =
+        runBots(
+            DamlLedgerClient.forHostWithLedgerIdDiscovery(
+                sandboxHost, sandboxPort, Optional.empty()),
+            outputPath,
+            telegramSender);
 
     System.out.println("Application started... Press Ctrl+C to stop it.");
     Thread.currentThread().join();
@@ -38,14 +45,15 @@ public class Main {
   }
 
   public static LedgerAPI runBots(
-      String sandboxHost, int sandboxPort, String outputPath, Consumer<String> telegramSender) {
+      DamlLedgerClient client, String outputPath, Consumer<String> telegramSender) {
     File outputDir = createOutputDir(outputPath);
     PisteBot bot = new PisteBot(telegramSender, swift -> writeToFile(outputDir, swift));
-    return startLedgerAPI(sandboxHost, sandboxPort, bot);
+
+    return startLedgerAPI(client, bot);
   }
 
-  private static LedgerAPI startLedgerAPI(String ledgerHost, int ledgerPort, PisteBot bot) {
-    LedgerAPI ledgerAPI = new LedgerAPI(ledgerHost, ledgerPort);
+  private static LedgerAPI startLedgerAPI(DamlLedgerClient client, PisteBot bot) {
+    LedgerAPI ledgerAPI = new LedgerAPI(client);
     ledgerAPI.start();
     ledgerAPI.listenEvents("Intermediary", bot);
     return ledgerAPI;

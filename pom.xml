@@ -36,11 +36,6 @@
             <version>${daml-sdk.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.daml.java</groupId>
-            <artifactId>codegen</artifactId>
-            <version>${daml-sdk.version}</version>
-        </dependency>
-        <dependency>
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
             <version>${args4j.version}</version>
@@ -116,7 +111,7 @@
         <dependency>
             <groupId>com.digitalasset</groupId>
             <artifactId>functest-java_2.12</artifactId>
-            <version>0.1.4</version>
+            <version>0.1.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -213,6 +208,7 @@
                                 <argument>${project.build.directory}/generated-sources/main/java</argument>
                                 <argument>${project.build.directory}/structured-products.dar</argument>
                             </arguments>
+                            <includePluginDependencies>true</includePluginDependencies>
                         </configuration>
                     </execution>
                 </executions>

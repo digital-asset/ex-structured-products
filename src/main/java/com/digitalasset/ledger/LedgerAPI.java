@@ -22,27 +22,22 @@ public class LedgerAPI {
 
   private DamlLedgerClient ledgerClient;
   private final String applicationId;
-  private final String hostname;
-  private final int port;
   private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-  public LedgerAPI(String hostname, int port) {
-    this.hostname = hostname;
-    this.port = port;
+  public LedgerAPI(DamlLedgerClient client) {
+    ledgerClient = client;
     this.applicationId = "Func-com.digitalasset.piste.lifecyclebot.LifecycleBotOld-Framework";
   }
 
   public void start() {
-    ledgerClient = DamlLedgerClient.forHostWithLedgerIdDiscovery(hostname, port, Optional.empty());
-
     boolean connected = false;
     while (!connected) {
       try {
         ledgerClient.connect();
         connected = true;
-        logger.info(String.format("Connected to sandbox at %s:%s", hostname, port));
+        logger.info(String.format("Connected to sandbox."));
       } catch (Exception ignored) {
-        logger.info(String.format("Connecting to sandbox at %s:%s", hostname, port));
+        logger.info(String.format("Connecting to sandbox."));
         try {
           Thread.sleep(1000);
         } catch (InterruptedException ignored2) {
