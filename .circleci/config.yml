@@ -71,6 +71,7 @@ jobs:
             - "*.dar"
             - "lib"
             - "NOTICE"
+            - "damldocs.md"
 
   daml_test:
     parameters:

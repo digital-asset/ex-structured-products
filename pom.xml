@@ -211,6 +211,23 @@
                             <includePluginDependencies>true</includePluginDependencies>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>daml-docs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>daml</executable>
+                            <arguments>
+                                <argument>damlc</argument>
+                                <argument>docs</argument>
+                                <argument>-o</argument>
+                                <argument>damldocs.md</argument>
+                                <argument>src/main/daml/DA/RefApps/StructuredProducts/MarketSetup.daml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
