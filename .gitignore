@@ -32,6 +32,7 @@ logs/
 *.log
 *.iml
 .navigator.conf
+.daml
 
 NOTICES
 .daml
