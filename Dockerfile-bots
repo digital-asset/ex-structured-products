@@ -9,6 +9,6 @@ WORKDIR /home/sdk
 
 COPY target/structured-products-docker.jar structured-products.jar
 COPY target/lib/* /home/sdk/lib/
-COPY telegram.properties telegram.properties
+COPY telegram.properties.sample telegram.properties
 
 ENTRYPOINT java -jar structured-products.jar -s ${SANDBOX_HOST} -p ${SANDBOX_PORT}
