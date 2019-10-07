@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-sdk-version: 0.13.27
+sdk-version: 0.13.29
 scenario: DA.RefApps.StructuredProducts.MarketSetup:marketSetup
 name: structured-products
 source: src/main/daml/DA/RefApps/StructuredProducts/MarketSetup.daml
