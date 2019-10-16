@@ -19,7 +19,7 @@ testWorkflow = scenario do
     tradeProposalToClient <- exercise tradeToIntermediary ProposeTradeToClient with
       client = client
       notional = 1.0
-    return (tradeToIntermediary, tradeProposalToClient)
+    pure (tradeToIntermediary, tradeProposalToClient)
   tradeIntermediaryToClient <- client `submit` do
     tradeToClient <- exercise tradeProposalToClient Accept with
       tradeId = "T02"
