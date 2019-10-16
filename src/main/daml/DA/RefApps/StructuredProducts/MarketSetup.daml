@@ -10,6 +10,14 @@ import DA.RefApps.StructuredProducts.DCN
 import DA.Time
 import DA.Date
 
+data MarketSetupData = MarketSetupData
+  { issuer : Party
+  , intermediary : Party
+  , client : Party
+  , regulator : Party
+  , tradeProposalToIntermediary : ContractId TradeProposal
+  }
+
 marketSetup = scenario do
   issuer <- getParty "Issuer"
   intermediary <- getParty "Intermediary"
@@ -87,4 +95,4 @@ marketSetup = scenario do
                                                              index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25402.47; currency = "USD" }};
                                                              source = "Reuters"; publishDate = dateToTime (2022, Feb, 8); issuer; subscribers; regulator }
 
-  return ()
+  return $ MarketSetupData issuer intermediary client regulator tradeProposalToIntermediary

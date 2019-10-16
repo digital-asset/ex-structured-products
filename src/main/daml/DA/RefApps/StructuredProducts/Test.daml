@@ -7,7 +7,29 @@ daml 1.2
 module DA.RefApps.StructuredProducts.Test where
 
 import DA.RefApps.StructuredProducts.MarketSetup
+import DA.RefApps.StructuredProducts.DCN
 
-test = scenario do
-  _ <- marketSetup
+testWorkflow = scenario do
+  MarketSetupData issuer intermediary client regulator tradeProposalToIntermediary <- marketSetup
+  (tradeIssuerToIntermediary, tradeProposalToClient) <- intermediary `submit` do
+    tradeToIntermediary <- exercise tradeProposalToIntermediary Accept with
+      tradeId = "T01"
+      bic = "B123"
+      iban = "I123"
+    tradeProposalToClient <- exercise tradeToIntermediary ProposeTradeToClient with
+      client = client
+      notional = 1.0
+    return (tradeToIntermediary, tradeProposalToClient)
+  tradeIntermediaryToClient <- client `submit` do
+    tradeToClient <- exercise tradeProposalToClient Accept with
+      tradeId = "T02"
+      bic = "B223"
+      iban = "I223"
+    return tradeToClient
+
+  issuer `submit` do
+    fetch tradeIssuerToIntermediary
+  issuer `submitMustFail`
+    fetch tradeIntermediaryToClient
   return ()
+
