@@ -25,11 +25,11 @@ testWorkflow = scenario do
       tradeId = "T02"
       bic = "B223"
       iban = "I223"
-    return tradeToClient
+    pure tradeToClient
 
   issuer `submit` do
     fetch tradeIssuerToIntermediary
   issuer `submitMustFail`
     fetch tradeIntermediaryToClient
-  return ()
+  pure ()
 
