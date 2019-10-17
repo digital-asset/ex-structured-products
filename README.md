@@ -55,7 +55,7 @@ Telegram is used as an optional receive confirmation messages from the app. Skip
 
 8. Specify the details of your Telegram setup.
 
-   ```
+   ```shell
    cp -n telegram.properties.sample telegram.properties
    ```
    Edit this file in a plain text editor and add the values for
