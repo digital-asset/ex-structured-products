@@ -1,7 +1,6 @@
-[![CircleCI](https://circleci.com/gh/digital-asset/ex-structured-products.svg?style=svg)](https://circleci.com/gh/digital-asset/ex-structured-products)
 # Reference Application: Structured Products
 
-## Introduction
+## Overview
 
 Structured Equity Derivative Products are used to provide custom payoffs, often for Private Bank or wealth clients, who are looking to get exposure to particular underlying company performance in a way that traditional securities do not provide. For example, I may wish to receive a higher payoff if I bet the price of an underlying security trades within a particular range. Investment banks provide these products — called Structured Products — and sell them to Intermediaries, who in turn often slice up the product and offer it to their end clients.
 
@@ -19,11 +18,12 @@ This application shows creation and subsequent event management and payment dete
 **Disclaimer:** This reference application is intended to demonstrate the capabilities of the DAML. You are recommended to consider other non-functional aspects, like security, resiliency, recoverability, etc prior to production use.
 
 #### Prerequisites
+
 Be sure you have the following installed:
-*   DAML SDK
-*   Docker
-*   Java
-*   Maven
+- [DAML SDK](https://docs.daml.com/)
+- Docker
+- Java
+- Maven
 
 #### Installing Additional Tools: Telegram Installation
 
@@ -43,9 +43,9 @@ Telegram is used as an optional receive confirmation messages from the app. Skip
     3. Create your own bot by sending the `/newbot` message to the `BotFather`. Give it a unique name ending in bot. The new bot will appear in your Telegram contact list using this name.
 
 5.  Note the token that is displayed. This will be your bot token. The usual format is:
-```
+    ```
     <numbers>:<characters>
-```
+    ```
 
 6. Contact the new bot by sending any message to it. Otherwise it will not be allowed to relay the notifications to you.
 
@@ -55,104 +55,95 @@ Telegram is used as an optional receive confirmation messages from the app. Skip
 
 8. Specify the details of your Telegram setup.
 
-```
-cp -n telegram.properties.sample telegram.properties
-```
-Edit this file in a plain text editor and add the values for
-`BOT_TOKEN` and `CHAT_ID` you acquired in step 1 above.
+   ```shell
+   cp -n telegram.properties.sample telegram.properties
+   ```
+   Edit this file in a plain text editor and add the values for
+   `BOT_TOKEN` and `CHAT_ID` you acquired in step 1 above.
 
    From this point, you will receive messages in Telegram.
 
 #### Build with Maven
-1. Build with Maven:
 
-```
+Type:
+```shell
 cp -n telegram.properties.sample telegram.properties
 mvn clean package
 ```
-**Note:** If you change the DAML models locally, you need to run re-run this command before starting the application.
+
+**Note:** If you change the DAML models locally, you need to re-run this command before starting the application.
 
 ### Starting the App
-There are two options
+
+**Note:** Make sure you have built the application with Maven (see: [Build with Maven](#build-with-maven)).
+
+There are two options:
 
 #### Option 1: Start App with Docker
 
-1. Build the project with maven, as described above.
-2. Compose and start the Docker containers.
-
-```
-docker-compose up --build
-```
-
-3. Open UI in a new browser tab with http://localhost:7500 in a browser.
+1. Type:
+    ```shell
+    docker-compose up --build
+    ```
+2. Open UI with a browser at http://localhost:7500.
 
 ##### Observing Output Files
 1. In another terminal, list the running docker containers.
-```
-docker ps
-```
+   ```
+   docker ps
+   ```
 2. Select the container id of the one whose image name contains `digitalasset/structured-products-bots`
 3. Run a shell in that container which will open a new prompt at `/home/sdk/ #`
-```
-docker exec -i -t <container_id> /bin/sh
-```
+   ```
+   docker exec -i -t <container_id> /bin/sh
+   ```
 4. List the files.
-```
-cd ./output_messages
-ls -l
-```
+   ```
+   cd ./output_messages
+   ls -l
+   ```
 5. Print file content.
-```
-cat <file_ name>
-```
+   ```
+   cat <file_ name>
+   ```
 6. To exit from this shell press **Ctrl+D**.
 
-#### Option 2: Start App in Stand-Alone
+#### Option 2: Start App in Standalone
 
-1. Make sure you have built the application with Maven (see Build with Maven step).
-2. Start the DA Sandbox and the Navigator.
-3. Type:
-
-```
-DAML_PROJECT="$(pwd)" daml start
-```
-The Navigator automatically opens in a new browser tab.
-
-4. Start the automation logic by starting bots. Type:
-
-```
-java -jar ./target/structured-products-1.0.0-SNAPSHOT.jar
-```
-
-**Note:** The `DAML_PROJECT=$(pwd)` part is a workaround for a bug in the
-SDK. In later versions we might not need this.
+1. Start the DAML Sandbox and Navigator. Type:
+    ```shell
+    daml start --sandbox-option --address=localhost
+    ```
+    The navigator will automatically open in new browser tab at http://localhost:7500.
+2. Start the automation logic by starting bots. Type:
+    ```shell
+    java -jar target/structured-products-1.0.0-SNAPSHOT.jar
+    ```
 
 ##### Observing Output Files
 1. In another terminal, first go to the folder that you started the bots from. Then list the files.
-```
-cd ./output_messages
-ls -l
-```
+   ```
+   cd ./output_messages
+   ls -l
+   ```
 2. Print file content.
-```
-cat <file_ name>
-```
+   ```
+   cat <file_ name>
+   ```
 ### Stopping the App
 
 #### Stopping Dockerized Run
-1. Close the browser tab.
-2. Stop the Docker containers by pressing **Ctrl+C** in the terminal in which they were started.
+1. Stop the Docker containers or bots by pressing **Ctrl+C**. (Alternatively, you can also stop it by typing `docker-compose down`.)
 
-
-#### Stopping Stand-Alone Run
-1. Close the browser tab.
-2. Stop the bots by pressing **Ctrl+C**.
-3. Stop the Sandbox and the Navigator by pressing **Ctrl+C**.
+#### Stopping Standalone Run
+1. Stop the bots by pressing **Ctrl+C**.
+1. Stop the Sandbox and the Navigator by pressing **Ctrl+C** in the DAML assistant.
 
 ### Resetting the Prototype
+
 Reset the application by following these steps:
-1. Stop the App by following the steps in Stopping the App section.
-2. Start the App in Docker or Standalone by following the steps in the relevant section.
+1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
+2.  Start the app in [Docker](#using-docker) or [Standalone](#standalone-mode) by following the steps in the relevant section.
 
 ## Walkthrough
 
