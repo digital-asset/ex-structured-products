@@ -90,22 +90,22 @@ There are two options:
 ##### Observing Output Files
 1. In another terminal, list the running docker containers.
    ```
-   `docker ps
-   ````
+   docker ps
+   ```
 2. Select the container id of the one whose image name contains `digitalasset/structured-products-bots`
 3. Run a shell in that container which will open a new prompt at `/home/sdk/ #`
-   ````
-   `docker exec -i -t <container_id> /bin/sh
-   ````
+   ```
+   docker exec -i -t <container_id> /bin/sh
+   ```
 4. List the files.
-   ````
-   `cd ./output_messages
-   `ls -l
-   ````
+   ```
+   cd ./output_messages
+   ls -l
+   ```
 5. Print file content.
-   ````
-   `cat <file_ name>
-   ````
+   ```
+   cat <file_ name>
+   ```
 6. To exit from this shell press **Ctrl+D**.
 
 #### Option 2: Start App in Standalone
