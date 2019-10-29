@@ -117,7 +117,7 @@ There are two options:
     The navigator will automatically open in new browser tab at http://localhost:7500.
 2. Start the automation logic by starting bots. Type:
     ```shell
-    java -jar target/structured-products-1.0.0-SNAPSHOT.jar
+    java -jar target/structured-products-1.0.0-SNAPSHOT.jar -p 6865
     ```
 
 ##### Observing Output Files
