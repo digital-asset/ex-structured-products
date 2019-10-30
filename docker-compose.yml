@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile-sandbox
     ports:
-      - "127.0.0.1:7600:7600"
+      - "127.0.0.1:6865:6865"
   structured-products-navigator:
     image: digitalasset/structured-products-navigator:1.0.0
     build:
@@ -23,7 +23,7 @@ services:
       - "127.0.0.1:7500:7500"
     environment:
       - SANDBOX_HOST=structured-products-sandbox
-      - SANDBOX_PORT=7600
+      - SANDBOX_PORT=6865
   structured-products-bots:
     image: digitalasset/structured-products-bots:1.0.0
     build:
@@ -33,6 +33,6 @@ services:
       - "structured-products-sandbox"
     environment:
       - SANDBOX_HOST=structured-products-sandbox
-      - SANDBOX_PORT=7600
+      - SANDBOX_PORT=6865
       # - BOT_TOKEN=${BOT_TOKEN:?provide BOT_TOKEN environment variable}
       # - CHAT_ID=${CHAT_ID:?provide CHAT_ID environment variable}
