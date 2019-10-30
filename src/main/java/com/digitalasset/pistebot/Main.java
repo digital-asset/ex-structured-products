@@ -20,7 +20,7 @@ public class Main {
   public static void main(String[] args) throws InterruptedException {
     String outputPath = System.getenv().getOrDefault("OUTPUT_PATH", "./output_messages");
     String sandboxHost = System.getenv().getOrDefault("SANDBOX_HOST", "localhost");
-    int sandboxPort = Integer.parseInt(System.getenv().getOrDefault("SANDBOX_PORT", "7600"));
+    int sandboxPort = Integer.parseInt(System.getenv().getOrDefault("SANDBOX_PORT", "6865"));
 
     Consumer<String> telegramSender;
     try {
