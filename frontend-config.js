@@ -86,6 +86,16 @@ marketData = {
     ]
 },
 
+trading = {
+    type: 'table-view',
+    title: "Trading",
+    source: { type: 'contracts', filter: [ { field: "template.id", value: "IntermediaryTradingRole" } ], search: "", sort: [ { field: "id", direction: "ASCENDING" } ] },
+    columns: [
+        createColumn("trader", "Trader", x => x.argument.intermediary, 40),
+        createColumn("observers", "Observers", x => (x.argument.issuer + ", " + x.argument.regulator), 40)
+    ]
+},
+
 tradeDetails = {
     type: 'table-view',
     title: "Trade Details",
@@ -143,7 +153,7 @@ paymentInstructions = {
 };
 ;
 
-export const customViews = (userId, party, role) => (
+export const customViews = (userId, party, role) => {
     
     // party == "AM" ? { 
     //     rolesAndRelationships: rolesAndRelationships,
@@ -200,12 +210,19 @@ export const customViews = (userId, party, role) => (
     //     SI_CCASS: SI_CCASS
     // } :
 
-    { 
+    var tabs = { 
         //roles: roles,
         marketData: marketData,
         tradeDetails: tradeDetails,
         events: events,
         paymentInstructions: paymentInstructions
-    }
-);
+    };
+
+    if (party == "Intermediary"){
+        tabs.trading = trading;
+    };
+
+    return tabs;
+
+};
 

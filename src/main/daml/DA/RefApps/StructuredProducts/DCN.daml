@@ -150,6 +150,33 @@ template IntermediaryRole
       nonconsuming OnboardClient: ContractId ClientRoleInvitation
         with client: Party
         do create ClientRoleInvitation with intermediary; client; regulator
+    controller intermediary can
+      nonconsuming CreateTradingRole: ContractId IntermediaryTradingRole
+        do
+          create IntermediaryTradingRole
+            with ..
+
+-- Contract by which a new trade proposal can be created    
+template IntermediaryTradingRole
+  with
+    intermediary: Party
+    issuer: Party
+    regulator: Party
+  where
+    signatory intermediary -- trades hidden from issuer
+    observer regulator, issuer
+    key intermediary: Party
+    maintainer key
+    controller intermediary can
+      nonconsuming ProposeTradeToClient: ContractId TradeProposal
+        with client: Party; notional: Decimal; tradeId: ContractId Trade
+        -- proposal arguments hidden from the issuer
+        do
+          trade <- fetch tradeId
+          assert (notional <= trade.terms.notional)
+          
+          assert (trade.buyerInfo.accountOwner == intermediary)
+          create TradeProposal with terms = trade.terms with { notional }; salesPrice = notional; issuerInfo = trade.buyerInfo; buyer = client -- = salesPriceForClient
 
 template ClientRoleInvitation
   with
@@ -205,9 +232,9 @@ template TradeProposal
       Reject : ()
         do return ()
 
--- Represents trade information. With this a new trade proposal can be created
--- or lifecycle events (e.g. coupon payment) can be invoked with the market data
--- for the current date
+-- Represents trade information.
+-- With this lifecycle events (e.g. coupon payment) can be invoked with the market data
+-- for the current date.
 template Trade
   with
     tradeId: Text
@@ -218,12 +245,8 @@ template Trade
   where
     signatory issuerInfo.accountOwner, buyerInfo.accountOwner
     observer terms.regulator
-    controller buyerInfo.accountOwner can
-      nonconsuming ProposeTradeToClient: ContractId TradeProposal
-        with client: Party; notional: Decimal
-        do
-          assert (notional <= terms.notional)
-          create TradeProposal with terms = terms with { notional }; salesPrice = notional; issuerInfo = buyerInfo; buyer = client -- = salesPriceForClient
+    key (buyerInfo.accountOwner, tradeId): (Party, Text)
+    maintainer key._1
     controller issuerInfo.accountOwner can
       nonconsuming Lifecycle: ()
         with marketDataCid: ContractId MarketData

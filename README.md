@@ -286,11 +286,15 @@ Follow these steps:
 1. Switch users and log in as **Intermediary**.
 2. Click on **Trade Details.**
 3. Click on the Trade contract.
+4. Copy the ContractId to the clipboard
 
-    1. Select the ProposeTradeToClient choice.
-    2. Enter Client as the client.
-    3. Enter 26000000 as notional (26 million, less than the original 50 million notional between Issuer and Intermediary).
-    4. Click **Submit.**
+5. Click on **Trading**
+    1. Select the IntermediaryTradingRole contract 
+    2. Select the ProposeTradeToClient choice.
+    3. Enter Client as the client.
+    4. Enter 26000000 as notional (26 million, less than the original 50 million notional between Issuer and Intermediary).
+    5. Paste the ContractId of the Trade from the clipboard
+    6. Click **Submit.**
 4. Click on **Trade Details**
 
     There is now a new Proposal contract (vs. Client) as well as the Trade contract (vs. the Issuer). Note the contract # of the Proposal.
