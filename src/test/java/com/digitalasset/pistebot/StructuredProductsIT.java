@@ -74,11 +74,15 @@ public class StructuredProductsIT {
     Trade.ContractId tradeCid =
         ledgerAdapter.getCreatedContractId(
             INTERMEDIARY_PARTY, Trade.TEMPLATE_ID, Trade.ContractId::new);
+    IntermediaryTradingRole.ContractId tradingRoleCid =
+        ledgerAdapter.getCreatedContractId(
+            INTERMEDIARY_PARTY,
+            IntermediaryTradingRole.TEMPLATE_ID,
+            IntermediaryTradingRole.ContractId::new);
     ledgerAdapter.exerciseChoice(
         INTERMEDIARY_PARTY,
-        tradeCid.exerciseProposeTradeToClient(
-            CLIENT_PARTY.getValue(), BigDecimal.valueOf(26000000)));
-
+        tradingRoleCid.exerciseProposeTradeToClient(
+            CLIENT_PARTY.getValue(), BigDecimal.valueOf(26000000), tradeCid));
     // Check the trade proposal with the client.
     ContractWithId<TradeProposal.ContractId> clientTrade =
         ledgerAdapter.getMatchedContract(

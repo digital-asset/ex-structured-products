@@ -15,6 +15,7 @@ data MarketSetupData = MarketSetupData
   , intermediary : Party
   , client : Party
   , regulator : Party
+  , tradingRole: ContractId IntermediaryTradingRole
   , tradeProposalToIntermediary : ContractId TradeProposal
   }
 
@@ -71,6 +72,7 @@ marketSetup = scenario do
   issuerRole <- submit issuer do create IssuerRole with issuer; regulator
   intermediaryInvitation <- submit issuer do exercise issuerRole OnboardIntermediary with intermediary
   intermediaryRole <- submit intermediary do exercise intermediaryInvitation AcceptInvitationFromIssuer
+  tradingRole <- submit intermediary do exercise intermediaryRole CreateTradeRole
   clientInvitation <- submit intermediary do exercise intermediaryRole OnboardClient with client
   clientRole <- submit client do exercise clientInvitation AcceptInvitation
 
@@ -95,4 +97,4 @@ marketSetup = scenario do
                                                              index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25402.47; currency = "USD" }};
                                                              source = "Reuters"; publishDate = dateToTime (2022, Feb, 8); issuer; subscribers; regulator }
 
-  pure $ MarketSetupData issuer intermediary client regulator tradeProposalToIntermediary
+  pure $ MarketSetupData issuer intermediary client regulator tradingRole tradeProposalToIntermediary

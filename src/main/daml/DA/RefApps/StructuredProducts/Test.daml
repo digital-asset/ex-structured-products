@@ -10,16 +10,18 @@ import DA.RefApps.StructuredProducts.MarketSetup
 import DA.RefApps.StructuredProducts.DCN
 
 testWorkflow = scenario do
-  MarketSetupData issuer intermediary client regulator tradeProposalToIntermediary <- marketSetup
+  MarketSetupData issuer intermediary client regulator tradingRoleCid tradeProposalToIntermediary <- marketSetup
   (tradeIssuerToIntermediary, tradeProposalToClient) <- intermediary `submit` do
     tradeToIntermediary <- exercise tradeProposalToIntermediary Accept with
       tradeId = "T01"
       bic = "B123"
       iban = "I123"
-    tradeProposalToClient <- exercise tradeToIntermediary ProposeTradeToClient with
+    tradeProposalToClient <- exercise tradingRoleCid ProposeTradeToClient with
+      tradeId = tradeToIntermediary
       client = client
-      notional = 1.0
+      notional = 1.0    
     pure (tradeToIntermediary, tradeProposalToClient)
+
   tradeIntermediaryToClient <- client `submit` do
     tradeToClient <- exercise tradeProposalToClient Accept with
       tradeId = "T02"
@@ -32,4 +34,3 @@ testWorkflow = scenario do
   issuer `submitMustFail`
     fetch tradeIntermediaryToClient
   pure ()
-
