@@ -151,7 +151,7 @@ template IntermediaryRole
         with client: Party
         do create ClientRoleInvitation with intermediary; client; regulator
     controller intermediary can
-      nonconsuming CreateTradeRole: ContractId IntermediaryTradingRole
+      nonconsuming CreateTradingRole: ContractId IntermediaryTradingRole
         do
           create IntermediaryTradingRole
             with ..
@@ -233,8 +233,8 @@ template TradeProposal
         do return ()
 
 -- Represents trade information.
--- with this lifecycle events (e.g. coupon payment) can be invoked with the market data
--- for the current date
+-- With this lifecycle events (e.g. coupon payment) can be invoked with the market data
+-- for the current date.
 template Trade
   with
     tradeId: Text

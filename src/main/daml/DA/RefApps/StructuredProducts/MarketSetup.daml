@@ -72,7 +72,7 @@ marketSetup = scenario do
   issuerRole <- submit issuer do create IssuerRole with issuer; regulator
   intermediaryInvitation <- submit issuer do exercise issuerRole OnboardIntermediary with intermediary
   intermediaryRole <- submit intermediary do exercise intermediaryInvitation AcceptInvitationFromIssuer
-  tradingRole <- submit intermediary do exercise intermediaryRole CreateTradeRole
+  tradingRole <- submit intermediary do exercise intermediaryRole CreateTradingRole
   clientInvitation <- submit intermediary do exercise intermediaryRole OnboardClient with client
   clientRole <- submit client do exercise clientInvitation AcceptInvitation
 
