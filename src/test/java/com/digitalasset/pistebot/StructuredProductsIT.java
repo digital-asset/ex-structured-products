@@ -4,8 +4,11 @@
  */
 package com.digitalasset.pistebot;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Party;
@@ -15,7 +18,13 @@ import com.digitalasset.testing.ledger.DefaultLedgerAdapter;
 import com.digitalasset.testing.utils.ContractWithId;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
-import da.refapps.structuredproducts.dcn.*;
+import da.refapps.structuredproducts.dcn.CouponEvent;
+import da.refapps.structuredproducts.dcn.IntermediaryTradingRole;
+import da.refapps.structuredproducts.dcn.KnockOutEvent;
+import da.refapps.structuredproducts.dcn.MarketData;
+import da.refapps.structuredproducts.dcn.PaymentInstructions;
+import da.refapps.structuredproducts.dcn.Trade;
+import da.refapps.structuredproducts.dcn.TradeProposal;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -170,10 +179,12 @@ public class StructuredProductsIT {
 
     // check Telegram messages are sent
     List<String> expectedTelegramMessages = generateExpectedTelegramMessages();
-    assertThat(telegramMessages.size(), is(expectedTelegramMessages.size()));
     for (int i = 0; i < telegramMessages.size(); ++i) {
       assertThat(telegramMessages.get(i), startsWith(expectedTelegramMessages.get(i)));
     }
+    // Assert size after messages so in case of a failure we get more descriptive error message,
+    // than for example 7 was not 8.
+    assertThat(telegramMessages.size(), is(expectedTelegramMessages.size()));
   }
 
   private <Cid, Contract> Cid find(
