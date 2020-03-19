@@ -53,10 +53,9 @@ public class StructuredProductsIT {
 
   private static List<String> telegramMessages = new ArrayList<>();
 
-  private static Sandbox sandboxC =
+  private static Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
-          .projectDir(Paths.get("."))
           .module(TEST_MODULE)
           .scenario(TEST_SCENARIO)
           .parties(INTERMEDIARY_PARTY.getValue(), CLIENT_PARTY.getValue(), ISSUER_PARTY.getValue())
@@ -64,8 +63,8 @@ public class StructuredProductsIT {
               client -> Main.runBots(client, "./output_messages", telegramMessages::add))
           .build();
 
-  @ClassRule public static ExternalResource compile = sandboxC.compilation();
-  @Rule public Sandbox.Process sandbox = sandboxC.process();
+  @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
+  @Rule public ExternalResource sandboxRule = sandbox.getRule();
 
   @Before
   public void setUp() {
