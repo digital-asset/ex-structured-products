@@ -43,17 +43,16 @@ import org.junit.rules.ExternalResource;
 
 public class StructuredProductsIT {
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/structured-products.dar");
-  private static final Integer sandboxPort = 6865;
   private static final String TEST_MODULE = "DA.RefApps.StructuredProducts.MarketSetup";
   private static final String TEST_SCENARIO = "marketSetup";
 
-  private static Party INTERMEDIARY_PARTY = new Party("Intermediary");
-  private static Party CLIENT_PARTY = new Party("Client");
-  private static Party ISSUER_PARTY = new Party("Issuer");
+  private static final Party INTERMEDIARY_PARTY = new Party("Intermediary");
+  private static final Party CLIENT_PARTY = new Party("Client");
+  private static final Party ISSUER_PARTY = new Party("Issuer");
 
-  private static List<String> telegramMessages = new ArrayList<>();
+  private static final List<String> telegramMessages = new ArrayList<>();
 
-  private static Sandbox sandbox =
+  private static final Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
           .module(TEST_MODULE)

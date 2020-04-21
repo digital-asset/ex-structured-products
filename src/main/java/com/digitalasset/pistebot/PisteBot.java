@@ -31,8 +31,9 @@ import org.slf4j.LoggerFactory;
 public class PisteBot implements Consumer<Event> {
   private static final Logger logger = LoggerFactory.getLogger(PisteBot.class);
 
-  private static String UNKNOWN = "unknown";
-  private static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyMMdd");
+  private static final String UNKNOWN = "unknown";
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyMMdd");
   private final Consumer<String> messaging;
   private final Consumer<MT202> swiftWriter;
 
@@ -90,7 +91,7 @@ public class PisteBot implements Consumer<Event> {
     String tradeId = event.tradeId;
     String koReason =
         Optional.ofNullable(event.knockOutReason)
-            .orElseGet(() -> PisteBot.UNKNOWN); // fields.getOrDefault("knockOutReason",
+            .orElse(PisteBot.UNKNOWN); // fields.getOrDefault("knockOutReason",
     // Unit.getInstance()).asText().orElse(PisteBot.UNKNOWN).getValue();
     sendNotification(String.format("DCN %s has knocked out, reason: %s", tradeId, koReason));
   }

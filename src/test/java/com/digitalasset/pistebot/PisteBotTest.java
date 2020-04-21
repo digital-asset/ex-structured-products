@@ -34,8 +34,8 @@ public class PisteBotTest {
   private static final String TRADE_ID = "tradeId";
   private static final String PRODUCT_ID = "productId";
   private static final String USD = "USD";
-  private CopyOnWriteArrayList<String> messages = new CopyOnWriteArrayList<>();
-  private CopyOnWriteArrayList<MT202> swiftMessages = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<String> messages = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<MT202> swiftMessages = new CopyOnWriteArrayList<>();
   private PisteBot bot;
 
   @Before
