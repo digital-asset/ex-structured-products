@@ -40,7 +40,7 @@ public class PisteBotTest {
 
   @Before
   public void setupBot() {
-    bot = new PisteBot(msg -> messages.add(msg), swift -> swiftMessages.add(swift));
+    bot = new PisteBot(messages::add, swiftMessages::add);
   }
 
   /** Checks if the expected outgoing Telegram message and no Swift message was generated */
