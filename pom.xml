@@ -227,6 +227,7 @@
                     </excludes>
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
+                        <java>SLASHSTAR_STYLE</java>
                     </mapping>
                 </configuration>
                 <executions>
