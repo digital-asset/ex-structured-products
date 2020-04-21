@@ -44,7 +44,7 @@ import org.junit.rules.ExternalResource;
 public class StructuredProductsIT {
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/structured-products.dar");
   private static final String TEST_MODULE = "DA.RefApps.StructuredProducts.MarketSetup";
-  private static final String TEST_SCENARIO = "marketSetup";
+  private static final String TEST_SCRIPT = "marketSetupScript";
 
   private static final Party INTERMEDIARY_PARTY = new Party("Intermediary");
   private static final Party CLIENT_PARTY = new Party("Client");
@@ -56,7 +56,7 @@ public class StructuredProductsIT {
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
           .module(TEST_MODULE)
-          .scenario(TEST_SCENARIO)
+          .startScript(TEST_SCRIPT)
           .parties(INTERMEDIARY_PARTY.getValue(), CLIENT_PARTY.getValue(), ISSUER_PARTY.getValue())
           .setupAppCallback(
               client -> Main.runBots(client, "./output_messages", telegramMessages::add))
