@@ -9,7 +9,10 @@ FROM digitalasset/daml-sdk:${sdk_vsn}
 
 WORKDIR /home/daml
 
-COPY target/structured-products.dar /home/daml/
+COPY target/structured-products.dar \
+  scripts/wait_for_ledger.sh \
+  scripts/run_daml_script.sh \
+  /home/daml/
 
 USER root
 RUN chown daml structured-products.dar
@@ -17,4 +20,5 @@ USER daml
 
 EXPOSE 6865
 
-CMD ~/.daml/bin/daml sandbox -- --address 0.0.0.0 --port 6865 --scenario DA.RefApps.StructuredProducts.MarketSetup:marketSetup  structured-products.dar
+CMD ./run_daml_script.sh localhost 6865 structured-products.dar DA.RefApps.StructuredProducts.MarketSetup:marketSetupScript & \
+  ~/.daml/bin/daml sandbox --address 0.0.0.0 --port 6865 structured-products.dar
