@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -34,13 +34,13 @@ public class PisteBotTest {
   private static final String TRADE_ID = "tradeId";
   private static final String PRODUCT_ID = "productId";
   private static final String USD = "USD";
-  private CopyOnWriteArrayList<String> messages = new CopyOnWriteArrayList<>();
-  private CopyOnWriteArrayList<MT202> swiftMessages = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<String> messages = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<MT202> swiftMessages = new CopyOnWriteArrayList<>();
   private PisteBot bot;
 
   @Before
   public void setupBot() {
-    bot = new PisteBot(msg -> messages.add(msg), swift -> swiftMessages.add(swift));
+    bot = new PisteBot(messages::add, swiftMessages::add);
   }
 
   /** Checks if the expected outgoing Telegram message and no Swift message was generated */
