@@ -12,18 +12,7 @@ services:
       dockerfile: Dockerfile-sandbox
     ports:
       - "127.0.0.1:6865:6865"
-  structured-products-navigator:
-    image: digitalasset/structured-products-navigator:1.0.0
-    build:
-      context: .
-      dockerfile: Dockerfile-navigator
-    depends_on:
-      - "structured-products-sandbox"
-    ports:
       - "127.0.0.1:7500:7500"
-    environment:
-      - SANDBOX_HOST=structured-products-sandbox
-      - SANDBOX_PORT=6865
   structured-products-bots:
     image: digitalasset/structured-products-bots:1.0.0
     build:
