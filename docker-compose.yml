@@ -9,7 +9,7 @@ services:
     image: digitalasset/structured-products-sandbox:1.0.0
     build:
       context: .
-      dockerfile: Dockerfile-sandbox
+      dockerfile: sandbox.Dockerfile
     ports:
       - "127.0.0.1:6865:6865"
       - "127.0.0.1:7500:7500"
@@ -17,7 +17,7 @@ services:
     image: digitalasset/structured-products-bots:1.0.0
     build:
       context: .
-      dockerfile: Dockerfile-bots
+      dockerfile: bots.Dockerfile
     depends_on:
       - "structured-products-sandbox"
     environment:
