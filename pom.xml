@@ -232,6 +232,7 @@
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
                         <java>SLASHSTAR_STYLE</java>
+                        <Dockerfile>SCRIPT_STYLE</Dockerfile>
                     </mapping>
                 </configuration>
                 <executions>
