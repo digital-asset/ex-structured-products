@@ -363,54 +363,56 @@ Follow these steps:
 Follow these steps:
 
 1. Go to the **Intermediary** window.
-2. Click on the **Market Data** tab and note that there is observed market data for 11 November, 2019, for both underlyings (contract #7:0).
-3. Click on the **Trade Details** tab.
-4. Click on the Trade contract with CLIENT001 as Trade ID.
+2. Click on the **Market Data** tab and note that there is observed market data for 11 November, 2019, for both underlyings.
+3. Click on the contract and copy its contract id.
+4. Click on the **Trade Details** tab.
+5. Click on the Trade contract with CLIENT001 as Trade ID.
 
     1. Click **Lifecycle.**
-    2. Enter #7:0’ as marketDataCid.
+    2. Enter the copied contract id as marketDataCid.
     3. Click **Submit**.
-5. Click on the **Events** tab and note that a Coupon event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
-6. Click on the **Payment Instructions** tab and note that a Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
-7. Switch users and log in as **Client**.
-8. Go to the **Client** window and click on the **Events** tab and note that the same Coupon event has been generated and shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
-9. Click on the **Payment Instructions** tab and note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
-10. Switch users and log in as **Issuer**.
-11. Click on **Events** and then **Payment Instructions** tab.
+6. Click on the **Events** tab and note that a Coupon event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
+7. Click on the **Payment Instructions** tab and note that a Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
+8. Switch users and log in as **Client**.
+9. Go to the **Client** window and click on the **Events** tab and note that the same Coupon event has been generated and shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
+10. Click on the **Payment Instructions** tab and note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
+11. Switch users and log in as **Issuer**.
+12. Click on **Events** and then **Payment Instructions** tab.
 
     Only one Event and one Payment Instruction are visible.
 
-12. In Finder, go to the /Users/<logged in user id>/desktop/swift_messages folder.
+13. Go to the `./output_messages` folder using a file browser.
 
     You will see a sample SWIFT MT202 payment message that has been generated for the payment between the Issuer and the Intermediary.
 
-13. If you have enabled the Telegram bot (search on Telegram for @DAMLBot), you will have received the event details in one message and the payment details (same MT202) in a separate message.
+14. If you have enabled the Telegram bot (search on Telegram for @DAMLBot), you will have received the event details in one message and the payment details (same MT202) in a separate message.
 
 #### Knockout Event: Issuer vs. Intermediary
 
 Follow these steps:
 
 1. Switch users and log in as **Issuer**.
-2. Click on the **Market Data** tab and note that there is observed market data for 8 February, 2022, for both underlyings (contract #10:0),
-3. Change the system date to 8 February, 2022.
-4. Click on the **Trade Details** tab.
-5. Click on Trade contract:
+2. Click on the **Market Data** tab and note that there is observed market data for 8 February, 2022, for both underlyings.
+3. Click on the contract and copy its contract id.
+4. Change the system date to 8 February, 2022.
+5. Click on the **Trade Details** tab.
+6. Click on Trade contract:
     1. Click on **Lifecycle.**
-    2. Enter #10:0 as marketDataCid.
+    2. Enter the copied contract id as marketDataCid.
     3. Click **Submit.**
-6. Click on the **Events** tab and note that now a Knockout event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
-7. Click on the **Payment Instructions** tab and note that now a Payment instruction has been generated for the full notional because the trade has knocked out. The screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
-8. Switch users and log in as **Intermediary**.
-9. Click on the **Events** tab.
+7. Click on the **Events** tab and note that now a Knockout event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
+8. Click on the **Payment Instructions** tab and note that now a Payment instruction has been generated for the full notional because the trade has knocked out. The screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
+9. Switch users and log in as **Intermediary**.
+10. Click on the **Events** tab.
 
     The same Knockout event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
 
-10. Click on the **Payment Instructions** tab and note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
-11. In Finder, go to the /Users/<logged in user id>/desktop/swift_messages folder.
+11. Click on the **Payment Instructions** tab and note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
+12. Go to the `./output_messages` folder using a file browser.
 
     You will see a sample SWIFT MT202 payment message that has been generated for the payment between the Issuer and the Intermediary
 
-12. If you have enabled the Telegram bot (search on Telegram for DAMLBot), you will have received the event details in one message and the payment details (same MT202) in a separate message.
+13. If you have enabled the Telegram bot (search on Telegram for DAMLBot), you will have received the event details in one message and the payment details (same MT202) in a separate message.
 
 #### Knockout Event: Intermediary vs. Client
 
@@ -418,18 +420,18 @@ Follow these steps:
 
 1. Switch users and log in as **Intermediary**.
 2. Click **Refresh** (this picks up the new system date).
-3. Click on **Market Data** tab and note that there is observed market data for 8 February, 2022, for both underlyings (contract #10:0).
+3. Click on **Market Data** tab and note that there is observed market data for 8 February, 2022, for both underlyings.
 4. Click on the **Trade Details** tab.
 5. Click on Trade contract:
     1. Click on **Lifecycle.**
-    2. Enter #10:0 as marketDataCid.
+    2. Click on the contract and copy its contract id.
     3. Click **Submit**.
 6. Click on the **Events** tab and note that now a Knockout event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
 7. Click on the **Payment Instructions** tab and note that now a Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
 8. Switch users and log in as **Client**.
 9. Go to the **Client** window and click on the **Events** tab and note that the same Knockout event has been generated that shows the relevant information: which trade it relates to, payment date, closing prices vs. strikes.
 10. Click on the **Payment Instructions** tab and note that the same Payment instruction has been generated, and the screen shows relevant information: trade it relates to, currency and amount, payment date, payer BIC and IBAN, and payee BIC and IBAN.
-11. In Finder, go to the /Users/<logged in user id>/desktop/swift_messages folder.
+11. Go to the `./output_messages` folder using a file browser.
 
     You will see a sample SWIFT MT202 payment message that has been generated for the payment between the Issuer and the Intermediary.
 
