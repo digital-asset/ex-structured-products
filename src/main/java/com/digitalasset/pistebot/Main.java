@@ -34,8 +34,7 @@ public class Main {
     }
     LedgerAPI ledgerAPI =
         runBots(
-            DamlLedgerClient.forHostWithLedgerIdDiscovery(
-                sandboxHost, sandboxPort, Optional.empty()),
+            DamlLedgerClient.newBuilder(sandboxHost, sandboxPort).build(),
             outputPath,
             telegramSender);
 
