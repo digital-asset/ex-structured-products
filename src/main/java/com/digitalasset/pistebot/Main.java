@@ -82,10 +82,10 @@ public class Main {
       pw.close();
     } catch (IllegalArgumentException iae) {
       logger.warn(
-          "Swift message contains invalid UETR id. It is expected to be a proper UUID. Not writing the message into a file. Reason: {}",
+          "Swift message contains invalid UETR id. It is expected to be a proper UUID. Not writing the message into a file.",
           iae);
     } catch (FileNotFoundException e) {
-      logger.warn("Could not write the message into a file. Reason: {}", e);
+      logger.warn("Could not write the message into a file.", e);
     }
   }
 
