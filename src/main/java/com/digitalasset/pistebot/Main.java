@@ -10,7 +10,7 @@ import com.prowidesoftware.swift.model.mt.mt2xx.MT202;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Optional;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -34,10 +34,20 @@ public class Main {
     }
     LedgerAPI ledgerAPI =
         runBots(
-            DamlLedgerClient.forHostWithLedgerIdDiscovery(
-                sandboxHost, sandboxPort, Optional.empty()),
+            DamlLedgerClient.newBuilder(sandboxHost, sandboxPort).build(),
             outputPath,
             telegramSender);
+
+    // Setting time is a workaround until DAML Script has a support for this.
+    try {
+      Instant tradeDate = Instant.parse("2018-11-02T00:00:00Z");
+      ledgerAPI.setTime(tradeDate);
+    } catch (Exception e) {
+      logger.error(
+          "The ledger does not support adjusting its time. Try using sandbox with static time mode.",
+          e);
+      System.exit(1);
+    }
 
     System.out.println("Application started... Press Ctrl+C to stop it.");
     Thread.currentThread().join();
@@ -72,10 +82,10 @@ public class Main {
       pw.close();
     } catch (IllegalArgumentException iae) {
       logger.warn(
-          "Swift message contains invalid UETR id. It is expected to be a proper UUID. Not writing the message into a file. Reason: {}",
+          "Swift message contains invalid UETR id. It is expected to be a proper UUID. Not writing the message into a file.",
           iae);
     } catch (FileNotFoundException e) {
-      logger.warn("Could not write the message into a file. Reason: {}", e);
+      logger.warn("Could not write the message into a file.", e);
     }
   }
 
