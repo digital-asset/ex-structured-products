@@ -10,7 +10,6 @@ import com.prowidesoftware.swift.model.mt.mt2xx.MT202;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.time.Instant;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -37,17 +36,6 @@ public class Main {
             DamlLedgerClient.newBuilder(sandboxHost, sandboxPort).build(),
             outputPath,
             telegramSender);
-
-    // Setting time is a workaround until DAML Script has a support for this.
-    try {
-      Instant tradeDate = Instant.parse("2018-11-02T00:00:00Z");
-      ledgerAPI.setTime(tradeDate);
-    } catch (Exception e) {
-      logger.error(
-          "The ledger does not support adjusting its time. Try using sandbox with static time mode.",
-          e);
-      System.exit(1);
-    }
 
     System.out.println("Application started... Press Ctrl+C to stop it.");
     Thread.currentThread().join();

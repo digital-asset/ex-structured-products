@@ -44,7 +44,7 @@ import org.junit.rules.ExternalResource;
 public class StructuredProductsIT {
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/structured-products.dar");
   private static final String TEST_MODULE = "DA.RefApps.StructuredProducts.MarketSetup";
-  private static final String TEST_SCRIPT = "marketSetupScript";
+  private static final String TEST_SCRIPT = "marketSetup";
 
   private static final Party INTERMEDIARY_PARTY = new Party("Intermediary");
   private static final Party CLIENT_PARTY = new Party("Client");
