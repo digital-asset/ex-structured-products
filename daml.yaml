@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-sdk-version: 1.4.0
-init-script: DA.RefApps.StructuredProducts.MarketSetup:marketSetupScript
+sdk-version: 1.5.0
+init-script: DA.RefApps.StructuredProducts.MarketSetup:marketSetup
 name: structured-products
 source: src/main/daml
 parties:

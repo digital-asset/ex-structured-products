@@ -9,11 +9,9 @@ import com.daml.ledger.javaapi.data.FiltersByParty;
 import com.daml.ledger.javaapi.data.LedgerOffset;
 import com.daml.ledger.javaapi.data.NoFilter;
 import com.daml.ledger.rxjava.DamlLedgerClient;
-import com.daml.ledger.rxjava.TimeClient;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.internal.operators.flowable.FlowableFromIterable;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
@@ -65,12 +63,5 @@ public class LedgerAPI {
                 true)
             .flatMap(tx -> new FlowableFromIterable<>(tx.getEvents()));
     compositeDisposable.add(events.forEach(process::accept));
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  public void setTime(Instant time) {
-    TimeClient timeClient = ledgerClient.getTimeClient();
-    Instant currentTime = timeClient.getTime().blockingFirst();
-    timeClient.setTime(currentTime, time).blockingGet();
   }
 }

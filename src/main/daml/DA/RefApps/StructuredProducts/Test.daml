@@ -3,34 +3,32 @@
 -- SPDX-License-Identifier: Apache-2.0
 --
 
-daml 1.2
 module DA.RefApps.StructuredProducts.Test where
+
+import Daml.Script
 
 import DA.RefApps.StructuredProducts.MarketSetup
 import DA.RefApps.StructuredProducts.DCN
 
-testWorkflow = scenario do
+testWorkflow = script do
   MarketSetupData issuer intermediary client regulator tradingRoleCid tradeProposalToIntermediary <- marketSetup
-  (tradeIssuerToIntermediary, tradeProposalToClient) <- intermediary `submit` do
-    tradeToIntermediary <- exercise tradeProposalToIntermediary Accept with
+  tradeIssuerToIntermediary <- intermediary `submit` do
+    exerciseCmd tradeProposalToIntermediary Accept with
       tradeId = "T01"
       bic = "B123"
       iban = "I123"
-    tradeProposalToClient <- exercise tradingRoleCid ProposeTradeToClient with
-      tradeId = tradeToIntermediary
+  tradeProposalToClient <- intermediary `submit` do
+    exerciseCmd tradingRoleCid ProposeTradeToClient with
+      tradeId = tradeIssuerToIntermediary
       client = client
       notional = 1.0
-    pure (tradeToIntermediary, tradeProposalToClient)
 
   tradeIntermediaryToClient <- client `submit` do
-    tradeToClient <- exercise tradeProposalToClient Accept with
+    exerciseCmd tradeProposalToClient Accept with
       tradeId = "T02"
       bic = "B223"
       iban = "I223"
-    pure tradeToClient
 
-  issuer `submit` do
-    fetch tradeIssuerToIntermediary
-  issuer `submitMustFail`
-    fetch tradeIntermediaryToClient
+  Some _ <- queryContractId issuer tradeIssuerToIntermediary
+  None <- queryContractId issuer tradeIntermediaryToClient
   pure ()

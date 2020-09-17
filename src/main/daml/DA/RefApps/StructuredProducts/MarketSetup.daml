@@ -9,7 +9,6 @@ module DA.RefApps.StructuredProducts.MarketSetup where
 import DA.RefApps.StructuredProducts.DCN
 import DA.Time
 import DA.Date
-import DA.Optional
 
 import Daml.Script
 
@@ -22,93 +21,12 @@ data MarketSetupData = MarketSetupData
   , tradeProposalToIntermediary : ContractId TradeProposal
   }
 
-marketSetup = scenario do
-  issuer <- getParty "Issuer"
-  intermediary <- getParty "Intermediary"
-  client <- getParty "Client"
-  regulator <- getParty "Regulator"
-
-  let dateToTime(d: (Int, Month, Int)): Time = time (fromGregorian d) 0 0 0
-
-  let
-    index1Id = "NKY";
-    index2Id = "INDU";
-    tradeDate = dateToTime (2018, Nov, 2)
-    maturityDate = dateToTime (2023, Nov, 16)
-    index1CouponStrike = PriceAndCCY with price = 17350.12; currency = "JPY"
-    index2CouponStrike = PriceAndCCY with price = 20304.59; currency = "USD"
-    couponObservationDates = map dateToTime [(2019, Feb, 11), (2019, May, 9), (2019, Aug, 9), (2019, Nov, 11),
-                                                (2020, Feb, 10), (2020, May, 11), (2020, Aug, 10), (2020, Nov, 9),
-                                                (2021, Feb, 9), (2021, May, 10), (2021, Aug, 9), (2021, Nov, 9),
-                                                (2022, Feb, 9), (2022, May, 9), (2022, Aug, 9), (2022, Nov, 9),
-                                                (2023, Feb, 9), (2023, May, 9), (2023, Aug, 9), (2023, Nov, 9)]
-    variableInterestPaymentDates = map dateToTime [(2019, Feb, 19), (2019, May, 16), (2019, Aug, 16), (2019, Nov, 18),
-                                                      (2020, Feb, 18), (2020, May, 18), (2020, Aug, 17), (2020, Nov, 16),
-                                                      (2021, Feb, 16), (2021, May, 17), (2021, Aug, 16), (2021, Nov, 16),
-                                                      (2022, Feb, 16), (2022, May, 16), (2022, Aug, 16), (2022, Nov, 16),
-                                                      (2023, Feb, 16), (2023, May, 16), (2023, Aug, 16), (2023, Nov, 16)]
-    index1KOPriceCCY = PriceAndCCY with price = 21687.65; currency = "JPY"
-    index2KOPriceCCY = PriceAndCCY with price = 25380.74; currency = "USD"
-    koDeterminationDates = map dateToTime [(2019, Feb, 8), (2019, May, 9), (2019, Aug, 8), (2019, Nov, 11),
-                                              (2020, Feb, 7), (2020, May, 11), (2020, Aug, 7), (2020, Nov, 9),
-                                              (2021, Feb, 5), (2021, May, 10), (2021, Aug, 6), (2021, Nov, 9),
-                                              (2022, Feb, 8), (2022, May, 9), (2022, Aug, 8), (2022, Nov, 9),
-                                              (2023, Feb, 9), (2023, May, 9), (2023, Aug, 8), (2023, Nov, 9)]
-    koRedemptionDates = variableInterestPaymentDates
-    couponSchedule = map (\ (x: (Time, Time)) -> CouponDate with couponObservationDate = fst x; variableInterestPaymentDate = snd x) (zip couponObservationDates variableInterestPaymentDates)
-    knockOutSchedule = map (\ (x: (Time, Time)) -> KnockOutDate with koDeterminationDate = fst x; koRedemptionDate = snd x) (zip koDeterminationDates koRedemptionDates)
-    terms = DCNTerms with { productId = "DCN"; notional = 50000000.0; currency = "JPY"; issuePricePerc = 100.0;
-                            strikeDatesAndPrices = StrikeDatesAndPrices with { couponSchedule; index1CouponStrike; index2CouponStrike };
-                            knockoutDatesAndPrices = KODatesAndPrices with { knockOutSchedule; index1KOPriceCCY; index2KOPriceCCY };
-                            index1Id; index2Id;
-                            variableInterestRate = VariableInterestRate with { minRate = 0.001; maxRate = 0.05 };
-                            dayCountFraction = DayCountFraction with { numerator = 30; denominator = 360 };
-                            tradeDate; maturityDate; regulator
-                          }
-    subscribers = [ intermediary, client ]
-    marketData1 =  MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 21687.65; currency = "JPY" }};
-                                     index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25380.74; currency = "USD" }};
-                                     source = "Reuters"; publishDate = tradeDate; issuer; subscribers; regulator
-                                   }
-    issuerInfo = AccountDetails with { accountOwner = issuer; bic = "ISSUERWCHHK80A"; iban = "12312331312"}
-
-  issuerRole <- submit issuer do create IssuerRole with issuer; regulator
-  intermediaryInvitation <- submit issuer do exercise issuerRole OnboardIntermediary with intermediary
-  intermediaryRole <- submit intermediary do exercise intermediaryInvitation AcceptInvitationFromIssuer
-  tradingRole <- submit intermediary do exercise intermediaryRole CreateTradingRole
-  clientInvitation <- submit intermediary do exercise intermediaryRole OnboardClient with client
-  clientRole <- submit client do exercise clientInvitation AcceptInvitation
-
-  passToDate (toDateUTC tradeDate)
-
-  tradeProposalToIntermediary <- submit issuer do create TradeProposal with terms; salesPrice = 50000000.0; issuerInfo; buyer = intermediary
-
-  --CouponMAX
-  marketDataCid1 <- submit issuer do create MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 17500.25; currency = "JPY" }};
-                                                             index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 20350.76; currency = "USD" }};
-                                                             source = "Reuters"; publishDate = dateToTime (2019, Nov, 11); issuer; subscribers; regulator }
-  --CouponMIN
-  marketDataCid2 <- submit issuer do create MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 17320.94; currency = "JPY" }};
-                                                             index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 20304.59; currency = "USD" }};
-                                                             source = "Reuters"; publishDate = dateToTime (2020, May, 11); issuer; subscribers; regulator }
-  --Nothing (today is not an observation/determination date)
-  marketDataCid3 <- submit issuer do create MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 21687.65; currency = "JPY" }};
-                                                             index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25380.74; currency = "USD" }};
-                                                             source = "Reuters"; publishDate = dateToTime (2021, Aug, 8); issuer; subscribers; regulator }
-  --KO
-  marketDataCid4 <- submit issuer do create MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 22057.30; currency = "JPY" }};
-                                                             index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25402.47; currency = "USD" }};
-                                                             source = "Reuters"; publishDate = dateToTime (2022, Feb, 8); issuer; subscribers; regulator }
-
-  pure $ MarketSetupData issuer intermediary client regulator tradingRole tradeProposalToIntermediary
-
-marketSetupScript: Script ()
-marketSetupScript = do
-  let
-    issuer = fromSome (partyFromText "Issuer")
-    intermediary = fromSome (partyFromText "Intermediary")
-    client = fromSome (partyFromText "Client")
-    regulator = fromSome (partyFromText "Regulator")
+marketSetup: Script MarketSetupData
+marketSetup = do
+  issuer <- allocatePartyWithHint "Issuer" (PartyIdHint "Issuer")
+  intermediary <- allocatePartyWithHint "Intermediary" (PartyIdHint "Intermediary")
+  client <- allocatePartyWithHint "Client" (PartyIdHint "Client")
+  regulator <- allocatePartyWithHint "Regulator" (PartyIdHint "Regulator")
 
   let dateToTime(d: (Int, Month, Int)): Time = time (fromGregorian d) 0 0 0
 
@@ -161,8 +79,7 @@ marketSetupScript = do
   clientInvitation <- submit intermediary do exerciseCmd intermediaryRole OnboardClient with client
   clientRole <- submit client do exerciseCmd clientInvitation AcceptInvitation
 
-  -- TODO: Do we have a replacement in SDK 1.0 or is this not needed?
-  -- passToDate (toDateUTC tradeDate)
+  setTime (time (toDateUTC tradeDate) 0 0 0)
 
   tradeProposalToIntermediary <- submit issuer do createCmd TradeProposal with terms; salesPrice = 50000000.0; issuerInfo; buyer = intermediary
 
@@ -181,6 +98,5 @@ marketSetupScript = do
   --KO
   marketDataCid4 <- submit issuer do createCmd MarketData with { index1Price = ClosingPrice with { underlying = index1Id; priceCCY = PriceAndCCY with { price = 22057.30; currency = "JPY" }};
                                                                  index2Price = ClosingPrice with { underlying = index2Id; priceCCY = PriceAndCCY with { price = 25402.47; currency = "USD" }};
-                                                                 source = "Reuters"; publishDate = dateToTime (2022, Feb, 8); issuer; subscribers; regulator }
-
-  pure ()
+                                                             source = "Reuters"; publishDate = dateToTime (2022, Feb, 8); issuer; subscribers; regulator }
+  pure $ MarketSetupData issuer intermediary client regulator tradingRole tradeProposalToIntermediary
