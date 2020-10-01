@@ -251,7 +251,7 @@
                 <version>3.10.0</version>
                 <configuration>
                     <excludeRoots>
-                        ${build.directory}/generated-sources/main/java
+                        ${project.build.directory}/generated-sources/main/java
                     </excludeRoots>
                 </configuration>
                 <executions>
