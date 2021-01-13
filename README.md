@@ -21,7 +21,6 @@ This application shows creation and subsequent event management and payment dete
 
 Be sure you have the following installed:
 - [DAML SDK](https://docs.daml.com/)
-- Docker
 - Java
 - Maven
 
@@ -77,39 +76,6 @@ mvn clean package
 
 **Note:** Make sure you have built the application with Maven (see: [Build with Maven](#build-with-maven)).
 
-There are two options:
-
-#### Option 1: Start App with Docker
-
-1. Type:
-    ```shell
-    docker-compose up --build
-    ```
-2. Open UI with a browser at http://localhost:7500.
-
-##### Observing Output Files
-1. In another terminal, list the running docker containers.
-   ```
-   docker ps
-   ```
-2. Select the container id of the one whose image name contains `digitalasset/structured-products-bots`
-3. Run a shell in that container which will open a new prompt at `/home/sdk/ #`
-   ```
-   docker exec -i -t <container_id> /bin/sh
-   ```
-4. List the files.
-   ```
-   cd ./output_messages
-   ls -l
-   ```
-5. Print file content.
-   ```
-   cat <file_ name>
-   ```
-6. To exit from this shell press **Ctrl+D**.
-
-#### Option 2: Start App in Standalone
-
 1. Start the DAML Sandbox and Navigator. Type:
     ```shell
     daml start --sandbox-option --address=localhost --sandbox-option --static-time
@@ -132,10 +98,6 @@ There are two options:
    ```
 ### Stopping the App
 
-#### Stopping Dockerized Run
-1. Stop the Docker containers or bots by pressing **Ctrl+C**. (Alternatively, you can also stop it by typing `docker-compose down`.)
-
-#### Stopping Standalone Run
 1. Stop the bots by pressing **Ctrl+C**.
 1. Stop the Sandbox and the Navigator by pressing **Ctrl+C** in the DAML assistant.
 
@@ -143,7 +105,7 @@ There are two options:
 
 Reset the application by following these steps:
 1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
-2.  Start the app in [Docker](#using-docker) or [Standalone](#standalone-mode) by following the steps in the relevant section.
+2.  Start the app by following the steps in [Starting the App](#starting-the-app) section.
 
 ## Walkthrough
 
