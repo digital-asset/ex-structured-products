@@ -55,8 +55,7 @@ public class StructuredProductsIT {
   private static final Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
-          .module(TEST_MODULE)
-          .startScript(TEST_SCRIPT)
+          .moduleAndScript(TEST_MODULE, TEST_SCRIPT)
           .parties(INTERMEDIARY_PARTY.getValue(), CLIENT_PARTY.getValue(), ISSUER_PARTY.getValue())
           .setupAppCallback(
               client -> Main.runBots(client, "./output_messages", telegramMessages::add))
