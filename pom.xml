@@ -27,7 +27,6 @@
         <pw-switf.version>SRU2018-7.10.3</pw-switf.version>
         <telegrambots.version>4.1</telegrambots.version>
         <junit.version>4.13.1</junit.version>
-        <netty.version>4.1.50.Final</netty.version>
         <jackson.version>2.10.0</jackson.version>
     </properties>
     <dependencies>
@@ -83,27 +82,7 @@
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-	<dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec-http2</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec-http</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler-proxy</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
+       <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -112,7 +91,7 @@
         <dependency>
             <groupId>com.digitalasset</groupId>
             <artifactId>functest-java_2.12</artifactId>
-            <version>0.1.17</version>
+            <version>0.1.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
