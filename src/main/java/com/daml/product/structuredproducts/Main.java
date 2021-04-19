@@ -2,10 +2,9 @@
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.digitalasset.pistebot;
+package com.daml.product.structuredproducts;
 
 import com.daml.ledger.rxjava.DamlLedgerClient;
-import com.digitalasset.ledger.LedgerAPI;
 import com.prowidesoftware.swift.model.mt.mt2xx.MT202;
 import java.io.File;
 import java.io.FileNotFoundException;
