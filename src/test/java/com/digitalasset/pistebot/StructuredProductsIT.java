@@ -10,12 +10,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.daml.extensions.testing.junit4.Sandbox;
+import com.daml.extensions.testing.ledger.DefaultLedgerAdapter;
+import com.daml.extensions.testing.utils.ContractWithId;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Value;
-import com.digitalasset.testing.junit4.Sandbox;
-import com.digitalasset.testing.ledger.DefaultLedgerAdapter;
-import com.digitalasset.testing.utils.ContractWithId;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.structuredproducts.dcn.CouponEvent;
