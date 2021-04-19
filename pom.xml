@@ -107,7 +107,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>com.digitalasset.pistebot.Main</mainClass>
+                            <mainClass>com.daml.product.structuredproducts.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
