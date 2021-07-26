@@ -5,8 +5,8 @@
 package com.daml.product.structuredproducts;
 
 import com.daml.ledger.javaapi.data.CreatedEvent;
+import com.daml.ledger.javaapi.data.DamlRecord;
 import com.daml.ledger.javaapi.data.Event;
-import com.daml.ledger.javaapi.data.Record;
 import com.prowidesoftware.swift.model.field.Field20;
 import com.prowidesoftware.swift.model.field.Field21;
 import com.prowidesoftware.swift.model.field.Field32A;
@@ -61,7 +61,7 @@ public class PisteBot implements Consumer<Event> {
     try {
       if (event instanceof CreatedEvent) {
         CreatedEvent ce = (CreatedEvent) event;
-        Record args = ce.getArguments();
+        DamlRecord args = ce.getArguments();
         if (CouponEvent.TEMPLATE_ID.equals(event.getTemplateId())) {
           processCouponEvent(CouponEvent.fromValue(args));
         } else if (KnockOutEvent.TEMPLATE_ID.equals(event.getTemplateId())) {
