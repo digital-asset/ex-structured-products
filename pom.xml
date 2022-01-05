@@ -22,7 +22,6 @@
         <daml-sdk.version>1.18.0</daml-sdk.version>
         <daml-plugin.version>0.1.5</daml-plugin.version>
         <slf4j.version>1.7.26</slf4j.version>
-        <logback.version>1.2.8</logback.version>
         <args4j.version>2.33</args4j.version>
         <pw-switf.version>SRU2018-7.10.3</pw-switf.version>
         <telegrambots.version>4.1</telegrambots.version>
@@ -44,11 +43,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>com.prowidesoftware</groupId>
